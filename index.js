@@ -7,21 +7,18 @@ var io = require('socket.io')(http);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/views/login.html');
-});
-
-app.get('/chat', function (req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
 
+var users = {};
 
 io.on('connection', function (socket) {
     console.log('a user connected');
-    socket.on('login',function(userName){
-
+    socket.on('login', function (userName) {
+        users[socket.id] = userName;
     });
     socket.on('chat message', function (msg) {
-        io.emit('chat message', msg);
+        io.emit('chat message', (users[socket.id] + ":" + msg));
     });
     socket.on('disconnect', function () {
         console.log('user disconnected');

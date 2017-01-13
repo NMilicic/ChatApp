@@ -3,28 +3,36 @@
 
 <head>
     <title>Socket.IO chat</title>
-<link rel="stylesheet"  href="./css/style.css" type="text/css" >
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
 </head>
 <script src="/socket.io/socket.io.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     var socket = io();
-     function sendMessage () {
+    function sendMessage() {
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
     };
-
+    function login() {
+        socket.emit('login', $('#userName').val());
+        $('.login').style('display', 'none');
+        $('.chat').style('display', 'block');
+        return false;
+    };
     socket.on('chat message', function (msg) {
         $('#messages').append($('<li>').text(msg));
     });
 </script>
 
 <body>
-    <ul id="messages"></ul>
-    <div class="form">
-        <input id="m"  /><button onClick="sendMessage()">Send</button>
-    </div>
+    <div class="form login">
+        <input id="userName" /><button onClick="login()">Login</button>
+</div>
+<ul id="messages"></ul>
+<div class="form chat" style="display:none;">
+<input id="m" /><button onClick="sendMessage()">Send</button>
+</div>
 </body>
 
 </html>

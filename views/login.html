@@ -8,21 +8,10 @@
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     var socket = io();
-     function login () {
-        socket.emit('login', $('#userName').val());
-      
-        $('#userName').val('');
-         window.location.href = "/chat";
-        return false;
-    };
-
-    socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg));
-    });
+     
 </script>
 
 <body>
-    <ul id="messages"></ul>
     <div class="form">
         <input id="userName"  /><button onClick="login()">Login</button>
     </div>
