@@ -3,15 +3,16 @@
 
 <head>
     <title>Socket.IO chat</title>
-<link rel="stylesheet"  href="./css/style.css" type="text/css" >
 </head>
 <script src="/socket.io/socket.io.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     var socket = io();
-     function sendMessage () {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
+     function login () {
+        socket.emit('login', $('#userName').val());
+      
+        $('#userName').val('');
+         window.location.href = "/chat";
         return false;
     };
 
@@ -23,7 +24,7 @@
 <body>
     <ul id="messages"></ul>
     <div class="form">
-        <input id="m"  /><button onClick="sendMessage()">Send</button>
+        <input id="userName"  /><button onClick="login()">Login</button>
     </div>
 </body>
 
