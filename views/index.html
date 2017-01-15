@@ -1,37 +1,98 @@
-<!doctype html>
-<html>
+<doctype html>
+    <html>
 
-<head>
-    <title>Socket.IO chat</title>
-    <link rel="stylesheet" href="./css/style.css" type="text/css">
-</head>
-<script src="/socket.io/socket.io.js"></script>
-<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-<script>
-    var socket = io();
-    function sendMessage() {
-        socket.emit('chat message', $('#m').val());
-        $('#m').val('');
-        return false;
-    };
-    function login() {
-        socket.emit('login', $('#userName').val());
-        $('.login').style('display', 'none');
-        $('.chat').style('display', 'block');
-        return false;
-    };
-    socket.on('chat message', function (msg) {
-        $('#messages').append($('<li>').text(msg));
-    });
-</script>
+    <head>
+        <title>Socket.IO chat</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous">
+        <link rel="stylesheet" href="./css/style.css" type="text/css">
+    </head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.chat').hide();
+            $('.loginButton').attr("disabled", true);
+
+            $('#userName').on('keyup change', function () {
+                if ($('#userName').val().length == 0) {
+                    $('.loginButton').attr("disabled", true);
+                }
+                else {
+                    $('.loginButton').attr("disabled", false);
+                }
+            });
+
+            $("#userName").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $(".loginButton").click();
+                }
+            });
+
+            $('.send-message-btn').attr("disabled", true);
+
+            $('.send-message').on('keyup change', function () {
+                if ($('#userName').val().length == 0) {
+                    $('.send-message-btn').attr("disabled", true);
+                }
+                else {
+                    $('.send-message-btn').attr("disabled", false);
+                }
+            });
+
+            $(".send-message").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $(".send-message-btn").click();
+                }
+            });
+        });
+
+        var socket = io();
+        function sendMessage() {
+            socket.emit('chat message', $('.send-message').val());
+            $('.send-message').val('');
+            return false;
+        };
+        function login() {
+            socket.emit('login', $('#userName').val());
+            $('.login').hide();
+            $('.chat').show();
+            return false;
+        };
+        socket.on('chat message', function (emitedData) {
+            $.get("../html/message.html", function (data) {
+                var message = data.replace('{{@Message}}', emitedData.message).replace('{{@UserName}}', emitedData.user)
+                $('.messages').append(message);
+                $('.messages').animate({
+                    scrollTop: $('.messages .msg-wrap:last-child').position().top
+                }, 'slow');
+            });
+        });
+    </script>
 
 <body>
-    <div class="form login">
-        <input id="userName" /><button onClick="login()">Login</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4 col-xs-6 col-xs-offset-3 login" style="height:100%">
+<div class="loginForm">
+    <h4>Enter user name to join chat:</h1>
+        <input id="userName" class="form-control userNameInput" placeholder="Username" />
+        <button class="btn btn-success btn-block loginButton" onClick="login()">Join</button>
 </div>
-<ul id="messages"></ul>
-<div class="form chat" style="display:none;">
-<input id="m" /><button onClick="sendMessage()">Send</button>
+</div>
+</div>
+
+<div class="message-wrap col-lg-8 col-lg-offset-2 chat">
+    <div class="messages-wrap">
+        <div class="messages"></div>
+    </div>
+    <div class="send-wrap ">
+        <textarea class="form-control send-message" rows="2" placeholder="Write a message..."></textarea>
+    </div>
+    <div class="btn-panel">
+        <button class="btn btn-primary send-message-btn pull-right col-lg-4" role="button" onClick="sendMessage()"><i class="fa fa-plus"></i> Send Message</button>
+</div>
+</div>
 </div>
 </body>
 

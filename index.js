@@ -18,7 +18,10 @@ io.on('connection', function (socket) {
         users[socket.id] = userName;
     });
     socket.on('chat message', function (msg) {
-        io.emit('chat message', (users[socket.id] + ":" + msg));
+        io.emit('chat message', {user:users[socket.id],message: msg});
+    });
+     socket.on('typing', function (sg) {
+        io.emit('typing', users[socket.id]);
     });
     socket.on('disconnect', function () {
         console.log('user disconnected');
