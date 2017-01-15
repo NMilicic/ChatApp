@@ -68,6 +68,24 @@
                 }, 'slow');
             });
         });
+        socket.on('joined', function (username) {
+            $.get("../html/notification.html", function (data) {
+                var message = data.replace('{{@data}}', username  + ' has joined')
+                $('.messages').append(message);
+                $('.messages').animate({
+                    scrollTop: $('.messages .msg-wrap:last-child').position().top
+                }, 'slow');
+            });
+        });
+        socket.on('left', function (username) {
+            $.get("../html/notification.html", function (data) {
+                var message = data.replace('{{@data}}', username + ' has left')
+                $('.messages').append(message);
+                $('.messages').animate({
+                    scrollTop: $('.messages .msg-wrap:last-child').position().top
+                }, 'slow');
+            });
+        });
     </script>
 
 <body>

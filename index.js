@@ -16,15 +16,13 @@ io.on('connection', function (socket) {
     console.log('a user connected');
     socket.on('login', function (userName) {
         users[socket.id] = userName;
+        socket.broadcast.emit('joined', userName);
     });
     socket.on('chat message', function (msg) {
         io.emit('chat message', {user:users[socket.id],message: msg});
     });
-     socket.on('typing', function (sg) {
-        io.emit('typing', users[socket.id]);
-    });
     socket.on('disconnect', function () {
-        console.log('user disconnected');
+        socket.broadcast.emit('left', users[socket.id]);
     });
 });
 
